@@ -1,5 +1,7 @@
 package to_do_list;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.io.BufferedWriter;
@@ -19,6 +21,9 @@ public class ToDoList {
 	};
 	
 	private String path = "D:\\Coding\\JAVA\\to_do_list\\src\\to_do_list\\data.txt";
+	
+	private int numberOfNotes = 0;
+	
 	
 	public ToDoList(String path) {
 		this.path = path;
@@ -57,41 +62,45 @@ public class ToDoList {
 	
 	// Удаление заметки
 	public void deleteNote(int index) {
-		cls();
-		showAllNotes();
-		File file = new File(path);
-		
-		try {
-			FileWriter writer = new FileWriter(path, true);
-			BufferedWriter bWriter = new BufferedWriter(writer);
-			
-			// Получение всех заметок с файла
-			Scanner scanner = new Scanner(file);
-			
-			String full_stroke = scanner.next();
-			String[] strokes = full_stroke.split("\n");
-			
-			// Очистка файла
-			PrintWriter writer2 = new PrintWriter(path);
-			writer2.println();
-			
-			// Перезапись 
-			for(int i = 0; i < strokes.length; i++) {
-				if(i != index-1) {
-					bWriter.write(strokes[i] + "\n");
-				}
-			}
-			bWriter.close();			
-			System.out.println("File was deleted succesfully!\n");
-		}
-		catch(IOException | NoSuchElementException e) {}
-		
-		System.out.println();
+	    cls();
+
+	    if(this.numberOfNotes > 0) {
+	    	File file = new File(path);
+		    try {
+		    	Scanner scanner = new Scanner(file);
+		    	FileWriter writer = new FileWriter(path, true);
+				BufferedWriter bWriter = new BufferedWriter(writer);
+		    	
+		    	String[] strokes = new String[numberOfNotes];   	
+		    	int len = 0;
+		    	
+		    	while(scanner.hasNextLine()) {
+		    		strokes[len++] = scanner.nextLine();
+		    	}
+		    	
+		    	clearAll();
+		    	
+		    	for(int i = 0; i < strokes.length; i++) {
+		    		if(i != index-1) {
+		    			bWriter.write(strokes[i] + "\n");
+		    		}					
+		    	}
+
+		    	bWriter.close();
+		    }
+		    catch(IOException e) {
+		    	System.out.println("error: Note was't deleted!\n");
+		    }
+	    }
+	    else {
+	    	System.out.println("You don't havy any notes...\n");
+	    }
 	}
 	
 	// Показывет все сущесвтующие заметки
 	public void showAllNotes() {
 		cls();
+		
 		System.out.println();
 		
 		File file = new File(path);
@@ -103,6 +112,8 @@ public class ToDoList {
 				System.out.println(i + ") " + scanner.nextLine());
 				i++;
 			}
+			this.numberOfNotes = i-1;
+			System.out.println("Notes: " + this.numberOfNotes + "\n");
 		}
 		catch(IOException e) {
 			System.out.println("error: File was not found!\n");
@@ -116,7 +127,7 @@ public class ToDoList {
 		try {
 			PrintWriter writer = new PrintWriter(path);
 			writer.println();
-			System.out.println("File was cleared successfully!\n");
+			System.out.println("List was cleared successfully!\n");
 		}
 		catch(IOException e) {
 			System.out.println("We have error!\n");

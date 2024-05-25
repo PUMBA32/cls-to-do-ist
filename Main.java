@@ -22,7 +22,7 @@ public class Main {
 				continue;
 			}
 			
-			if(choice >= 5) break;
+			if(choice >= 5 || choice <= 0) break;
 			
 			switch(choice) {
 			case 1:
@@ -31,6 +31,7 @@ public class Main {
 				to_do.newNote(note);
 				break;
 			case 2:
+				to_do.showAllNotes();
 				System.out.print("Enter number of note, that you want to delete: ");
 				String number = scanner.nextLine();
 				
